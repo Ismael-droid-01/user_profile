@@ -121,7 +121,6 @@ def download_posts(subreddit="all", limit=100, language="en", interval_seconds=1
         print(f"\n📥 Obteniendo publicaciones a las {timestamp}...")
         posts = get_posts(subreddit=subreddit, limit=limit, language=language)
 
-        print(posts)
         if posts:
             inserted_count = save_to_db(posts=posts)
             print(f"✅ Se insertaron {inserted_count} posts nuevos (de {len(posts)} intentos).")
