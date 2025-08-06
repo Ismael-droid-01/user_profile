@@ -55,74 +55,84 @@ def get_channel_info(channel_id):
 def get_comments(video_id, max_results=100, language="en"):
     comments = []
     channel_cache = {}
-    try:
-        request = client.commentThreads().list(
-            part="snippet",
-            videoId = video_id,
-            maxResults = max_results,
-            textFormat = "plainText"
-        )
-        response = request.execute()
-    except Exception as e:
-        print(f"❌ Error al obtener comentarios del video {video_id}: {e}")
-        return comments
+    next_page_token = None
+    fetched = 0
 
     try:
-        video_request = client.videos().list(
+        # Obtener título del video
+        video_response = client.videos().list(
             part="snippet",
             id=video_id
-        )
-        video_response = video_request.execute()
+        ).execute()
         items = video_response.get("items", [])
         video_title = items[0]["snippet"]["title"] if items else "unknown"
-    except Exception as e:
+    except Exception:
         video_title = "unknown"
 
-    for item in response.get("items", []):
-        top_comment = item["snippet"]["topLevelComment"]
-        comment_id = top_comment["id"]
-        snippet = top_comment["snippet"]
-        
-        text = snippet.get("textDisplay", "")
-
+    while fetched < max_results:
         try:
-            comment_published = datetime.strptime(snippet.get("publishedAt", ""), "%Y-%m-%dT%H:%M:%SZ").strftime('%Y-%m-%d %H:%M:%S')
-        except (ValueError, TypeError):
-            comment_published = "unknown"
+            request = client.commentThreads().list(
+                part="snippet",
+                videoId=video_id,
+                maxResults=min(100, max_results - fetched),
+                textFormat="plainText",
+                pageToken=next_page_token
+            )
+            response = request.execute()
+        except Exception as e:
+            print(f"❌ Error al obtener comentarios del video {video_id}: {e}")
+            break
 
-        like_count = snippet.get("likeCount", 0) 
+        for item in response.get("items", []):
+            top_comment = item["snippet"]["topLevelComment"]
+            comment_id = top_comment["id"]
+            snippet = top_comment["snippet"]
+            text = snippet.get("textDisplay", "")
 
-        try:
-            detected_language = detect(text)
-        except LangDetectException:
-            detected_language = "unknown"
+            try:
+                comment_published = datetime.strptime(snippet.get("publishedAt", ""), "%Y-%m-%dT%H:%M:%SZ").strftime('%Y-%m-%d %H:%M:%S')
+            except (ValueError, TypeError):
+                comment_published = "unknown"
 
-        channel_id = snippet.get('authorChannelId', {}).get('value')
+            like_count = snippet.get("likeCount", 0)
 
-        # Cache para ahorrar peticiones
-        if channel_id in channel_cache:
-            channel_info = channel_cache[channel_id]
-        else:
-            channel_info = get_channel_info(channel_id)
-            channel_cache[channel_id] = channel_info
+            try:
+                detected_language = detect(text)
+            except LangDetectException:
+                detected_language = "unknown"
 
-        channel_name, channel_created, subscriber_count, view_count, country = channel_info
+            channel_id = snippet.get('authorChannelId', {}).get('value')
+            if channel_id in channel_cache:
+                channel_info = channel_cache[channel_id]
+            else:
+                channel_info = get_channel_info(channel_id)
+                channel_cache[channel_id] = channel_info
 
-        if detected_language == language:
-            comments.append((
-                comment_id,
-                text,
-                detected_language,
-                comment_published,
-                like_count,
-                video_id,
-                video_title,
-                channel_name,
-                channel_created,
-                subscriber_count, 
-                view_count,
-                country
-            ))
+            channel_name, channel_created, subscriber_count, view_count, country = channel_info
+
+            if detected_language == language:
+                comments.append((
+                    comment_id,
+                    text,
+                    detected_language,
+                    comment_published,
+                    like_count,
+                    video_id,
+                    video_title,
+                    channel_name,
+                    channel_created,
+                    subscriber_count,
+                    view_count,
+                    country
+                ))
+                fetched += 1
+
+            if fetched >= max_results:
+                break
+
+        next_page_token = response.get("nextPageToken")
+        if not next_page_token:
+            break
 
     return comments
 
