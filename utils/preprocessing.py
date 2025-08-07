@@ -11,6 +11,8 @@ _npl_models = {
 }
 
 def normalize_text(text, language="en"):
+    original_text = text
+
     # Eliminar emojis
     text = emoji.replace_emoji(text, replace="")
 
@@ -33,7 +35,12 @@ def normalize_text(text, language="en"):
     # Eliminar múltiple espacios
     text = re.sub(r'\s+', ' ', text).strip()
 
-    return text
+    # Calcular el porcentaje de cambio
+    total_chars = max(len(original_text), 1)
+    changed_chars = sum(1 for o, n in zip(original_text, text) if o != n) # + abs(len(original_text) - len(text))
+    change_percentage = (changed_chars / total_chars) * 100
+
+    return text, round(change_percentage, 2)
 
 def parse_and_tokenize(text, language="en"):
     if language not in _npl_models:
