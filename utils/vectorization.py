@@ -24,8 +24,13 @@ def show_bow(bow):
         all_words.update(words.keys())
     all_words = sorted(all_words)
 
+    MAX_COLUMNS = 20
+    if len(all_words) > MAX_COLUMNS:
+        all_words = all_words[:MAX_COLUMNS]
+
     view = tk.Tk()
     view.title("Bolsa de palabras")
+    view.geometry("1200x600")
 
     columns = all_words
 
@@ -66,6 +71,13 @@ def show_bow(bow):
 
     frame.rowconfigure(0, weight=1)
     frame.columnconfigure(0, weight=1)
+
+    vsb.grid_remove()
+    hsb.grid_remove()
+
+    tree.bind("<Configure>", lambda e: (vsb.grid() if tree.yview() != (0.0,1.0) else vsb.grid_remove()) or (hsb.grid() if tree.xview() != (0.0,1.0) else hsb.grid_remove()))
+    tree.bind("<Motion>", lambda e: (vsb.grid() if tree.yview() != (0.0,1.0) else vsb.grid_remove()) or (hsb.grid() if tree.xview() != (0.0,1.0) else hsb.grid_remove()))
+
 
     view.mainloop()
 
