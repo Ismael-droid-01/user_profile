@@ -27,17 +27,19 @@ def show_bow(bow):
     view = tk.Tk()
     view.title("Bolsa de palabras")
 
-    columns = ["user_id"] + all_words
+    columns = ["usuario"] + all_words
     tree = ttk.Treeview(view, columns=columns, show="headings")
+    # Bloque de redimensión de columnas
+    tree.bind("<Button-1>", lambda e: "break" if tree.identify_region(e.x, e.y) == "separator" else None)
 
     for column in columns:
         tree.heading(column, text=column)
-        tree.column(column, width=100)
+        tree.column(column, width=100, stretch=False)
 
     for user_id, counter in bow.items():
         row = [user_id] + [counter.get(word, 0) for word in all_words]
         tree.insert("", tk.END, values=row)
-    
+
     tree.pack(expand=True, fill="both")
     view.mainloop()
 
