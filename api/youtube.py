@@ -167,6 +167,7 @@ def insert_many_comments(conn, cursor, comments):
 
 def fetch_all_comments():
     conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -180,7 +181,7 @@ def fetch_all_comments():
 
     conn.close()
 
-    return rows
+    return [dict(row) for row in rows]
 
 def save_to_db(comments):
     conn = sqlite3.connect(DB_PATH)

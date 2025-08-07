@@ -15,8 +15,7 @@ client = praw.Reddit(
 
 client.read_only = True
 
-# DB_PATH = "data/reddit_posts.db"
-DB_PATH = "reddit.db"
+DB_PATH = "data/reddit_posts.db"
 
 def get_posts(subreddit="offmychest", limit=100, language="en"):
     posts = []
@@ -97,7 +96,6 @@ def fetch_all_posts(limit=None):
 
     conn.close()
 
-    # return rows
     return [dict(row) for row in rows]
 
 def save_to_db(posts):

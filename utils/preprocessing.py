@@ -50,3 +50,22 @@ def parse_and_tokenize(text, language="en"):
             tokens.append(token.lemma_.lower())
     
     return tokens
+
+def normalize_social_data(data, source):
+    normalized = []
+
+    for record in data:
+        if source == "reddit":
+            user_id = record.get("author")
+            text = record.get("title") + " " +  record.get("body")
+        
+        elif source == "youtube":
+            user_id = record.get("channel_name")
+            text = record.get("text")
+        
+        normalized.append({
+            "user_id": user_id,
+            "text": text
+        })
+
+    return normalized
