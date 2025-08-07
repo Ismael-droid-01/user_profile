@@ -11,3 +11,6 @@ if __name__ == "__main__":
         print("Texto original:", post["body"])
         print("Texto normalizado:", text)
         print("---"*100)
+
+    for text in preprocessed_text:
+        print(preprocessing.parse_and_tokenize(text, language="en"))

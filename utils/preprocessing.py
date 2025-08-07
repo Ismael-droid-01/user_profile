@@ -1,6 +1,14 @@
 import re
 import emoji
 import contractions
+import string
+import spacy
+
+# Modelos de tokenización
+_npl_models = {
+    "es": spacy.load("es_core_news_sm"),
+    "en": spacy.load("en_core_web_sm")
+}
 
 def normalize_text(text, language="en"):
     # Eliminar emojis
@@ -19,7 +27,26 @@ def normalize_text(text, language="en"):
     if language == "en":
         text = contractions.fix(text)
 
+    # Eliminar signos de puntuación
+    text = re.sub(f"[{re.escape(string.punctuation)}]", "", text)
+
     # Eliminar múltiple espacios
     text = re.sub(r'\s+', ' ', text).strip()
 
     return text
+
+def parse_and_tokenize(text, language="en"):
+    if language not in _npl_models:
+        return None
+    
+    doc = _npl_models[language](text)
+
+    tokens = []
+    for token in doc:
+        # is_stop: Stopword ("y", "el", "la")
+        # is_punct: Signos de puntuación ("-", "?", ".")
+        # is_alpha: Solo letras ("perro", "comer")
+        if (not token.is_stop and not token.is_punct and token.is_alpha):
+            tokens.append(token.lemma_.lower())
+    
+    return tokens
