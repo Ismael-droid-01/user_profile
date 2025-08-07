@@ -27,7 +27,7 @@ def show_bow(bow):
     view = tk.Tk()
     view.title("Bolsa de palabras")
 
-    columns = ["usuario"] + all_words
+    columns = all_words
 
     frame = ttk.Frame(view)
     frame.pack(expand=True, fill="both")
@@ -38,7 +38,7 @@ def show_bow(bow):
     tree = ttk.Treeview(
         frame,
         columns=columns,
-        show="headings",
+        show="tree headings",
         yscrollcommand=vsb.set,
         xscrollcommand=hsb.set
     )
@@ -49,13 +49,16 @@ def show_bow(bow):
     # Bloque de redimensión de columnas
     tree.bind("<Button-1>", lambda e: "break" if tree.identify_region(e.x, e.y) == "separator" else None)
 
+    tree.heading('#0', text='usuario')
+    tree.column('#0', width=250, stretch=False)
+
     for column in columns:
         tree.heading(column, text=column)
         tree.column(column, width=100, stretch=False)
 
     for user_id, counter in bow.items():
-        row = [user_id] + [counter.get(word, 0) for word in all_words]
-        tree.insert("", tk.END, values=row)
+        row = [counter.get(word, 0) for word in all_words]
+        tree.insert("", tk.END, text=user_id, values=row)
 
     tree.grid(row=0, column=0, sticky="nsew")
     vsb.grid(row=0, column=1, sticky="ns")
