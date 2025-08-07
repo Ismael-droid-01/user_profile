@@ -15,7 +15,8 @@ client = praw.Reddit(
 
 client.read_only = True
 
-DB_PATH = "data/reddit_posts.db"
+# DB_PATH = "data/reddit_posts.db"
+DB_PATH = "reddit.db"
 
 def get_posts(subreddit="offmychest", limit=100, language="en"):
     posts = []
@@ -77,21 +78,27 @@ def insert_many_posts(conn, cursor, posts):
     """, posts)
     conn.commit()
 
-def fetch_all_posts():
+def fetch_all_posts(limit=None):
     conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
-    cursor.execute("""
+    query = """
         SELECT post_id, title, body, language, post_created, author, account_created, link_karma, comment_karma, is_mod
         FROM posts
         ORDER BY post_created DESC
-    """)
+    """
+    if limit is not None:
+        query += f" LIMIT {limit}"
+
+    cursor.execute(query)
 
     rows = cursor.fetchall()
 
     conn.close()
 
-    return rows
+    # return rows
+    return [dict(row) for row in rows]
 
 def save_to_db(posts):
     conn = sqlite3.connect(DB_PATH)

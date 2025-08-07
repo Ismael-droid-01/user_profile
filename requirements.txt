@@ -3,3 +3,5 @@ python-dotenv
 langdetect
 google-api-python-client
 python-dateutil
+emoji
+contractions

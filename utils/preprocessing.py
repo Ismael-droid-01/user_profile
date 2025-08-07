@@ -1,7 +1,8 @@
 import re
 import emoji
+import contractions
 
-def normalize_text(text):
+def normalize_text(text, language="en"):
     # Eliminar emojis
     text = emoji.replace_emoji(text, replace="")
 
@@ -14,6 +15,9 @@ def normalize_text(text):
 
     # Convertir a minúsculas
     text = text.lower()
+
+    if language == "en":
+        text = contractions.fix(text)
 
     # Eliminar múltiple espacios
     text = re.sub(r'\s+', ' ', text).strip()
