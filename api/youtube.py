@@ -165,17 +165,22 @@ def insert_many_comments(conn, cursor, comments):
     """, comments)
     conn.commit()
 
-def fetch_all_comments():
+def fetch_all_comments(limit=None):
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
-    cursor.execute("""
+    query = """
         SELECT comment_id, text, language, comment_published, like_count,
         video_id, video_title, channel_name, channel_created, subscriber_count, view_count, country
         FROM comments
         ORDER BY comment_published DESC
-    """)
+    """
+
+    if limit is not None:
+        query += f"LIMIT {limit}"
+    
+    cursor.execute(query)
 
     rows = cursor.fetchall()
 
