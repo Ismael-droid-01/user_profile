@@ -16,7 +16,7 @@ if __name__ == "__main__":
     #vectorization.show_bow(bow)
     print(data[0])
 
-    window = show_viewer(data[0])
+    #window = show_viewer(data[0])
     # Agregar el porcentaje de cambios al vector de usuario
     # Pasarle al viewer como parametro el vector completo (columnas: text, porcentaje de cambios ?)
-    # bow.show_viewer(data)
+    bow.show_viewer(data)

@@ -49,3 +49,5 @@ def show_viewer(user_vector, parent=None):
     # Botón
     btn_save = tk.Button(window, text="Guardar etiqueta", bg="#4CAF50", fg="white", font=("Arial", 10, "bold"))
     btn_save.pack(pady=10)
+
+    return window

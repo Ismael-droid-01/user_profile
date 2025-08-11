@@ -3,12 +3,18 @@ from tkinter import ttk
 import gui.labeler as labeler
 from functools import partial
 
+subwindow = None
+
 def on_double_click(tree, item_to_record, event):
+    global subwindow
     selected_item = tree.focus()
     if selected_item:
         record = item_to_record.get(selected_item)
         if record:
-            labeler.show_viewer(record)
+            if subwindow is None or not subwindow.winfo_exists():
+                subwindow = labeler.show_viewer(record)
+            else:
+                subwindow.lift()
 
 def show_viewer(data_list):
     # Convertir la lista a diccionario dentro de la función
