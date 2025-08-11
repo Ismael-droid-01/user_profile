@@ -51,6 +51,15 @@ def save_labels(combo_personality, combo_professional):
     else:
         messagebox.showwarning("Advertencia", "Por favor, selecciona ambas etiquetas antes de guardar.")
 
+def format_meta_key(key):
+    translations = {
+        "video_title": "Título del video",
+        "country": "País",
+        "is_mod": "Moderador"
+    }
+
+    return translations[key]
+
 def show_viewer(user_vector, parent=None):
     print(user_vector)
     view = tk.Toplevel(parent)
@@ -72,6 +81,27 @@ def show_viewer(user_vector, parent=None):
 
     content_frame.bind("<Configure>", lambda event: on_frame_configure(event, canvas))
 
+    # --- Información general ---
+    info_frame = tk.Frame(content_frame)
+    info_frame.pack(fill="x", padx=10, pady=(10,5))
+
+    # Línea 1
+    tk.Label(info_frame, text=f"Idioma: {user_vector.get('language', 'N/A')}", font=("Arial", 10)).grid(row=0, column=0, sticky="w", padx=5)
+    tk.Label(info_frame, text=f"Días de cuenta: {user_vector.get('account_age_days', 'N/A')}", font=("Arial", 10)).grid(row=0, column=1, sticky="w", padx=5)
+
+    # Línea 2
+    tk.Label(info_frame, text=f"Popularidad: {user_vector.get('popularity_score', 'N/A')}", font=("Arial", 10)).grid(row=1, column=0, sticky="w", padx=5)
+    tk.Label(info_frame, text=f"Engagement: {user_vector.get('engagement_score', 'N/A')}", font=("Arial", 10)).grid(row=1, column=1, sticky="w", padx=5)
+    tk.Label(info_frame, text=f"Alcance: {user_vector.get('reach_score', 'N/A')}", font=("Arial", 10)).grid(row=1, column=2, sticky="w", padx=5)
+
+    # Datos variables del content_meta
+    meta = user_vector.get('content_meta', {})
+    if meta:
+        row_idx = 2
+        for key, value in meta.items():
+            tk.Label(info_frame, text=f"{format_meta_key(key)}: {value}", font=("Arial", 10)).grid(row=row_idx, column=0, columnspan=3, sticky="w", padx=5, pady=(0,2))
+            row_idx += 1
+
     lbl_original_title = tk.Label(content_frame, text="Texto original:", font=("Arial", 10, "bold"))
     lbl_original_title.pack(anchor="w", padx=10, pady=(10,0))
     original_text_frame = create_text_viewer(content_frame, user_vector["text"])
@@ -84,7 +114,7 @@ def show_viewer(user_vector, parent=None):
     clean_text_frame = create_text_viewer(content_frame, clean_text)
     clean_text_frame.pack(fill="both", padx=20, pady=(0, 10), expand=False)
 
-    lbl_changes = tk.Label(content_frame, text=f"% cambios: {percentage_change} %", font=("Arial", 10, "bold"))
+    lbl_changes = tk.Label(content_frame, text=f"{percentage_change} % de cambios", font=("Arial", 10, "bold"))
     lbl_changes.pack(anchor="w", padx=10, pady=(0,10))
 
     tokens_table = create_tokens_table(content_frame, user_vector['bow'])

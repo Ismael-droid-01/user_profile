@@ -37,7 +37,7 @@ def normalize_text(text, language="en"):
 
     # Calcular el porcentaje de cambio
     total_chars = max(len(original_text), 1)
-    changed_chars = sum(1 for o, n in zip(original_text, text) if o != n) # + abs(len(original_text) - len(text))
+    changed_chars = sum(1 for o, n in zip(original_text, text) if o != n) + abs(len(original_text) - len(text))
     change_percentage = (changed_chars / total_chars) * 100
 
     return text, round(change_percentage, 2)
