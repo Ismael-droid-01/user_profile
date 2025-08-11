@@ -2,8 +2,8 @@ import tkinter as tk
 from tkinter import ttk
 from utils.preprocessing import normalize_text
 
-def show_viewer(user_vector):
-    window = tk.Toplevel()
+def show_viewer(user_vector, parent=None):
+    window = tk.Toplevel(parent)
     window.title(user_vector["user_id"])
     window.geometry("400x500")
     window.resizable(False, False)
@@ -49,5 +49,3 @@ def show_viewer(user_vector):
     # Botón
     btn_save = tk.Button(window, text="Guardar etiqueta", bg="#4CAF50", fg="white", font=("Arial", 10, "bold"))
     btn_save.pack(pady=10)
-
-    window.mainloop()

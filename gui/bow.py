@@ -1,5 +1,14 @@
 import tkinter as tk
 from tkinter import ttk
+import gui.labeler as labeler
+from functools import partial
+
+def on_double_click(tree, item_to_record, event):
+    selected_item = tree.focus()
+    if selected_item:
+        record = item_to_record.get(selected_item)
+        if record:
+            labeler.show_viewer(record)
 
 def show_viewer(data_list):
     # Convertir la lista a diccionario dentro de la función
@@ -8,7 +17,6 @@ def show_viewer(data_list):
         user_id = record.get('user_id', 'Desconocido')
         user_bow = record.get('bow', {})
         bow[user_id] = user_bow
-
 
     all_words = set()
     for words in bow.values():
@@ -52,9 +60,13 @@ def show_viewer(data_list):
         tree.heading(column, text=column)
         tree.column(column, width=100, stretch=False)
 
+    item_to_record = {}
+
     for user_id, counter in bow.items():
         row = [counter.get(word, 0) for word in all_words]
-        tree.insert("", tk.END, text=user_id, values=row)
+        item_id = tree.insert("", tk.END, text=user_id, values=row)
+        record = next(r for r in data_list if r.get('user_id') == user_id)
+        item_to_record[item_id] = record
 
     tree.grid(row=0, column=0, sticky="nsew")
     vsb.grid(row=0, column=1, sticky="ns")
@@ -68,6 +80,8 @@ def show_viewer(data_list):
 
     tree.bind("<Configure>", lambda e: (vsb.grid() if tree.yview() != (0.0,1.0) else vsb.grid_remove()) or (hsb.grid() if tree.xview() != (0.0,1.0) else hsb.grid_remove()))
     tree.bind("<Motion>", lambda e: (vsb.grid() if tree.yview() != (0.0,1.0) else vsb.grid_remove()) or (hsb.grid() if tree.xview() != (0.0,1.0) else hsb.grid_remove()))
+
+    tree.bind("<Double-1>", partial(on_double_click, tree, item_to_record))
 
     view.mainloop()
 
