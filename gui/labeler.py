@@ -14,11 +14,34 @@ def create_text_viewer(parent, content):
     scrollbar.pack(side="right", fill="y")
     return frame
 
+def create_tokens_table(parent, bow_data):
+    frame = tk.Frame(parent)
+
+    columns = ("token", "count")
+    tree = ttk.Treeview(frame, columns=columns, show="headings", height=10)
+    tree.heading("token", text="Token")
+    tree.heading("count", text="Frecuencia")
+    tree.column("token", width=150, anchor="w")
+    tree.column("count", width=80, anchor="center")
+
+    # Insertar datos
+    for token, count in bow_data.items():
+        tree.insert("", "end", values=(token, count))
+
+    # Scrollbar vertical para la tabla
+    scrollbar = tk.Scrollbar(frame, orient="vertical", command=tree.yview)
+    tree.configure(yscrollcommand=scrollbar.set)
+
+    tree.pack(side="left", fill="both", expand=True)
+    scrollbar.pack(side="right", fill="y")
+
+    return frame
+
 def show_viewer(user_vector, parent=None):
     print(user_vector)
     view = tk.Toplevel(parent)
     view.title(user_vector["user_id"])
-    view.geometry("400x800")
+    view.geometry("800x800")
     view.resizable(False, False)
 
     # Crear canvas y scrollbar principal
@@ -29,7 +52,7 @@ def show_viewer(user_vector, parent=None):
     scrollbar.pack(side="right", fill="y")
     canvas.pack(side="left", fill="both", expand=True)
 
-    # Frame interior donde irán todos los widgets
+    # Frame interior
     content_frame = tk.Frame(canvas)
     canvas.create_window((0,0), window=content_frame, anchor="nw")
 
@@ -39,7 +62,6 @@ def show_viewer(user_vector, parent=None):
 
     content_frame.bind("<Configure>", on_frame_configure)
 
-    # Ahora ponemos todos tus widgets dentro de content_frame en lugar de view
     lbl_original_title = tk.Label(content_frame, text="Texto original:", font=("Arial", 10, "bold"))
     lbl_original_title.pack(anchor="w", padx=10, pady=(10,0))
     original_text_frame = create_text_viewer(content_frame, user_vector["text"])
@@ -55,11 +77,8 @@ def show_viewer(user_vector, parent=None):
     lbl_changes = tk.Label(content_frame, text=f"% cambios: {percentage_change} %", font=("Arial", 10, "bold"))
     lbl_changes.pack(anchor="w", padx=10, pady=(0,10))
 
-    lbl_tokens_title = tk.Label(content_frame, text="Tokens (frecuencia):", font=("Arial", 10, "bold"))
-    lbl_tokens_title.pack(anchor="w", padx=10)
-
-    for token, count in user_vector['bow'].items():
-        tk.Label(content_frame, text=f"{token}: {count}").pack(anchor="w", padx=20)
+    tokens_table = create_tokens_table(content_frame, user_vector['bow'])
+    tokens_table.pack(fill="both", padx=20, pady=(0, 10), expand=False)
 
     lbl_personality = tk.Label(content_frame, text="Selector personalidad:")
     lbl_personality.pack(anchor="w", padx=10, pady=(10,0))
