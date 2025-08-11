@@ -15,7 +15,8 @@ client = praw.Reddit(
 
 client.read_only = True
 
-DB_PATH = "data/reddit_posts.db"
+EN_DB_PATH = "data/en/reddit_posts.db"
+ES_DB_PATH = "data/es/reddit_posts.db"
 
 def get_posts(subreddit="offmychest", limit=100, language="en"):
     posts = []
@@ -77,8 +78,12 @@ def insert_many_posts(conn, cursor, posts):
     """, posts)
     conn.commit()
 
-def fetch_all_posts(limit=None):
-    conn = sqlite3.connect(DB_PATH)
+def fetch_all_posts(limit=None, language="en"):
+    if language == "en":
+        conn = sqlite3.connect(EN_DB_PATH)
+    elif language == "es":
+        conn = sqlite3.connect(ES_DB_PATH)
+
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
@@ -98,8 +103,12 @@ def fetch_all_posts(limit=None):
 
     return [dict(row) for row in rows]
 
-def save_to_db(posts):
-    conn = sqlite3.connect(DB_PATH)
+def save_to_db(posts, language="en"):
+    if language == "en":
+        conn = sqlite3.connect(EN_DB_PATH)
+    elif language == "es":
+        conn = sqlite3.connect(ES_DB_PATH)
+
     cursor = conn.cursor()
 
     create_table_if_not_exists(conn=conn, cursor=cursor)
@@ -127,7 +136,7 @@ def download_posts(subreddit="all", limit=100, language="en", interval_seconds=1
         posts = get_posts(subreddit=subreddit, limit=limit, language=language)
 
         if posts:
-            inserted_count = save_to_db(posts=posts)
+            inserted_count = save_to_db(posts=posts, language=language)
             print(f"✅ Se insertaron {inserted_count} posts nuevos (de {len(posts)} intentos).")
         else:
             print("⚠️ No se encontraron publicaciones válidas.")

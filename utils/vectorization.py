@@ -84,9 +84,9 @@ def build_bow(data, language="en"):
 def generate_vector(source="reddit", limit=10, language="en"):
     # 1. Obtener los datos
     if source == "reddit":
-        posts = reddit.fetch_all_posts(limit=limit)
+        posts = reddit.fetch_all_posts(limit=limit, language=language)
     elif source == "youtube":
-        posts = youtube.fetch_all_comments(limit=limit)
+        posts = youtube.fetch_all_comments(limit=limit, language=language)
 
     # 2. Estandarizar los datos
     data = standardize_social_data(posts, source=source)

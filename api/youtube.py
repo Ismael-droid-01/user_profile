@@ -12,7 +12,8 @@ load_dotenv()
 API_KEY = os.getenv("YOUTUBE_API_KEY")
 client = build('youtube', 'v3', developerKey=API_KEY)
 
-DB_PATH = "data/youtube_comments.db"
+EN_DB_PATH = "data/en/youtube_comments.db"
+ES_DB_PATH = "data/es/youtube_comments.db"
 
 def get_channel_info(channel_id):
     try:
@@ -165,8 +166,12 @@ def insert_many_comments(conn, cursor, comments):
     """, comments)
     conn.commit()
 
-def fetch_all_comments(limit=None):
-    conn = sqlite3.connect(DB_PATH)
+def fetch_all_comments(limit=None, language="en"):
+    if language == "en":
+        conn = sqlite3.connect(EN_DB_PATH)
+    elif language == "es":
+        conn = sqlite3.connect(ES_DB_PATH)
+
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
@@ -178,7 +183,7 @@ def fetch_all_comments(limit=None):
     """
 
     if limit is not None:
-        query += f"LIMIT {limit}"
+        query += f" LIMIT {limit}"
     
     cursor.execute(query)
 
@@ -188,8 +193,12 @@ def fetch_all_comments(limit=None):
 
     return [dict(row) for row in rows]
 
-def save_to_db(comments):
-    conn = sqlite3.connect(DB_PATH)
+def save_to_db(comments, language="en"):
+    if language == "en":
+        conn = sqlite3.connect(EN_DB_PATH)
+    elif language == "es":
+        conn = sqlite3.connect(ES_DB_PATH)
+
     cursor = conn.cursor()
 
     create_table_if_not_exists(conn=conn, cursor=cursor)
@@ -217,7 +226,7 @@ def download_comments(video_ids, max_results=100, language="en", interval_second
         comments = get_comments(video_id=video_id, max_results=max_results, language=language)
 
         if comments:
-            inserted_count = save_to_db(comments=comments)
+            inserted_count = save_to_db(comments=comments, language=language)
             print(f"✅ Se insertaron {inserted_count} comentarios nuevos (de {len(comments)} intentos).")
         else:
             print("⚠️ No se encontraron comentarios.")

@@ -1,16 +1,13 @@
 import utils.preprocessing as preprocessing
-import api.reddit as reddit
+import api.youtube as youtube
+
+videos = [
+    "eJwXivMnxcY",
+    "9Y4rRFjtqpU",
+    "pJU2y5R1VQk",
+    "Sd-dYAsXABM",
+    "RG8YSMUZ2Nk",
+]
 
 if __name__ == "__main__":
-    posts = reddit.fetch_all_posts(limit=2)
-    preprocessed_text = []
-    for post in posts:
-        preprocessed_text.append(preprocessing.normalize_text(post["body"], language="en"))
-    
-    for post, text in zip(posts, preprocessed_text):
-        print("Texto original:", post["body"])
-        print("Texto normalizado:", text)
-        print("---"*100)
-
-    for text in preprocessed_text:
-        print(preprocessing.parse_and_tokenize(text, language="en"))
+    youtube.download_comments([videos[0]], language="es")
