@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 from utils.preprocessing import normalize_text
 
 def create_text_viewer(parent, content):
@@ -40,6 +41,15 @@ def create_tokens_table(parent, bow_data):
 # Función para actualizar scrollregion cuando cambie tamaño
 def on_frame_configure(event, canvas):
     canvas.configure(scrollregion=canvas.bbox("all"))
+
+def save_labels(combo_personality, combo_professional):
+    personality = combo_personality.get()
+    professional = combo_personality.get()
+
+    if personality and professional:
+        messagebox.showinfo("Éxito", f"Etiquetas guardadas")
+    else:
+        messagebox.showwarning("Advertencia", "Por favor, selecciona ambas etiquetas antes de guardar.")
 
 def show_viewer(user_vector, parent=None):
     print(user_vector)
@@ -96,7 +106,7 @@ def show_viewer(user_vector, parent=None):
     combo_professional = ttk.Combobox(selectors_frame, values=["Programador", "Diseñador", "Analista"], width=15)
     combo_professional.grid(row=0, column=3, sticky="w")
 
-    btn_save = tk.Button(content_frame, text="Guardar etiqueta", bg="#4CAF50", fg="white", font=("Arial", 10, "bold"))
+    btn_save = tk.Button(content_frame, text="Guardar etiqueta", bg="#4CAF50", fg="white", font=("Arial", 10, "bold"), command=lambda: save_labels(combo_personality, combo_professional))
     btn_save.pack(pady=10)
 
     return view

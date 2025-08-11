@@ -132,6 +132,9 @@ def download_posts(subreddit="all", limit=100, language="en", interval_seconds=1
     while True:
         timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M')
 
+        if language == "es":
+            subreddit = "es"
+
         print(f"\n📥 Obteniendo publicaciones a las {timestamp}...")
         posts = get_posts(subreddit=subreddit, limit=limit, language=language)
 

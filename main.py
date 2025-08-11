@@ -4,7 +4,7 @@ import gui.bow as bow
 from gui.labeler import show_viewer
 
 if __name__ == "__main__":
-    data = generate_vector(source="youtube", limit=10, language="en")
+    data = generate_vector(source="youtube", limit=100, language="es")
 
     # data = fetch_all_posts(limit=1)
     # Mostrar BOW final
