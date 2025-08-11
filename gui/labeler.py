@@ -37,6 +37,10 @@ def create_tokens_table(parent, bow_data):
 
     return frame
 
+# Función para actualizar scrollregion cuando cambie tamaño
+def on_frame_configure(event, canvas):
+    canvas.configure(scrollregion=canvas.bbox("all"))
+
 def show_viewer(user_vector, parent=None):
     print(user_vector)
     view = tk.Toplevel(parent)
@@ -56,11 +60,7 @@ def show_viewer(user_vector, parent=None):
     content_frame = tk.Frame(canvas)
     canvas.create_window((0,0), window=content_frame, anchor="nw")
 
-    # Función para actualizar scrollregion cuando cambie tamaño
-    def on_frame_configure(event):
-        canvas.configure(scrollregion=canvas.bbox("all"))
-
-    content_frame.bind("<Configure>", on_frame_configure)
+    content_frame.bind("<Configure>", lambda event: on_frame_configure(event, canvas))
 
     lbl_original_title = tk.Label(content_frame, text="Texto original:", font=("Arial", 10, "bold"))
     lbl_original_title.pack(anchor="w", padx=10, pady=(10,0))
@@ -80,15 +80,21 @@ def show_viewer(user_vector, parent=None):
     tokens_table = create_tokens_table(content_frame, user_vector['bow'])
     tokens_table.pack(fill="both", padx=20, pady=(0, 10), expand=False)
 
-    lbl_personality = tk.Label(content_frame, text="Selector personalidad:")
-    lbl_personality.pack(anchor="w", padx=10, pady=(10,0))
-    combo_personality = ttk.Combobox(content_frame, values=["Formal", "Casual", "Amigable"])
-    combo_personality.pack(anchor="w", padx=20, pady=(0,10))
+    # Contenedor para los selectores en una fila
+    selectors_frame = tk.Frame(content_frame)
+    selectors_frame.pack(fill="x", padx=10, pady=(10, 20))
 
-    lbl_professional = tk.Label(content_frame, text="Selector profesional:")
-    lbl_professional.pack(anchor="w", padx=10)
-    combo_professional = ttk.Combobox(content_frame, values=["Programador", "Diseñador", "Analista"])
-    combo_professional.pack(anchor="w", padx=20, pady=(0,20))
+    # Etiqueta y combo para personalidad
+    lbl_personality = tk.Label(selectors_frame, text="Selector personalidad:")
+    lbl_personality.grid(row=0, column=0, sticky="w", padx=(0,5))
+    combo_personality = ttk.Combobox(selectors_frame, values=["Formal", "Casual", "Amigable"], width=15)
+    combo_personality.grid(row=0, column=1, sticky="w", padx=(0,15))
+
+    # Etiqueta y combo para profesional
+    lbl_professional = tk.Label(selectors_frame, text="Selector profesional:")
+    lbl_professional.grid(row=0, column=2, sticky="w", padx=(0,5))
+    combo_professional = ttk.Combobox(selectors_frame, values=["Programador", "Diseñador", "Analista"], width=15)
+    combo_professional.grid(row=0, column=3, sticky="w")
 
     btn_save = tk.Button(content_frame, text="Guardar etiqueta", bg="#4CAF50", fg="white", font=("Arial", 10, "bold"))
     btn_save.pack(pady=10)
