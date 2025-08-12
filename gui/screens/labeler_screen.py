@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from utils.preprocessing import normalize_text
+from utils.storage import save_vector
 
 class LabelerScreen(tk.Toplevel):
     def __init__(self, user_vector, parent=None):
@@ -165,6 +166,12 @@ class LabelerScreen(tk.Toplevel):
         professional = self.combo_professional.get()
 
         if personality and professional:
-            messagebox.showinfo("Éxito", f"Etiquetas guardadas")
+            self.user_vector["personality"] = personality
+            self.user_vector["professional"] = professional
+            
+            if save_vector(self.user_vector):
+                messagebox.showinfo("Éxito", "Etiquetas guardadas correctamente.")
+            else:
+                messagebox.showerror("Error", "No se pudo guardar el vector en el archivo.")
         else:
             messagebox.showwarning("Advertencia", "Por favor, selecciona ambas etiquetas antes de guardar.")

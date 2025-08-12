@@ -52,6 +52,7 @@ def standardize_social_data(data, source):
             "user_id": user_id,
             "text": text,
             "language": language,
+            "source": source, 
             "account_age_days": account_age_days,
             "popularity_score": popularity_score,
             "engagement_score": engagement_score,
