@@ -7,7 +7,7 @@ class LabelerScreen(tk.Toplevel):
         super().__init__(parent)
         self.user_vector = user_vector
         self.title(user_vector.get("user_id", "Detalle"))
-        self.geometry("800x800")
+        self.geometry("625x800")
         self.resizable(False, False)
 
         self._create_scrollable_area()
