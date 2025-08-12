@@ -121,7 +121,7 @@ class LabelerScreen(tk.Toplevel):
         tree.column("token", width=150, anchor="w")
         tree.column("count", width=80, anchor="center")
 
-        for token, count in bow_data.items():
+        for token, count in sorted(bow_data.items(), key=lambda item: item[1], reverse=True):
             tree.insert("", "end", values=(token, count))
 
         scrollbar = ttk.Scrollbar(frame, orient="vertical", command=tree.yview)
