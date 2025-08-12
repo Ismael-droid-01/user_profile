@@ -24,15 +24,6 @@ class BowScreen(tk.Toplevel):
         self._layout_widgets()
         self._bind_events()
 
-        # Funcion de debugeo de la lista de palabras
-        word = set()
-        for user in data_list:
-            for w in user["bow"]:
-                word.add(w)
-        
-        print(word)
-        print(len(word))
-
     def _get_all_words(self):
         all_words = set()
         for words in self.bow.values():
@@ -68,8 +59,7 @@ class BowScreen(tk.Toplevel):
 
         self.vsb.config(command=self.tree.yview)
         self.hsb.config(command=self.tree.xview)
-
-        
+   
         self.tree.bind("<Button-1>", lambda e: "break" if self.tree.identify_region(e.x, e.y) == "separator" else None)
 
         self.tree.heading('#0', text='User')
@@ -124,9 +114,8 @@ class BowScreen(tk.Toplevel):
 
     def _update_page_label(self):
         self.page_label.config(text=f"Página {self.current_page + 1} de {self.total_pages}")
-        # self.prev_button.config(state="normal" if self.current_page > 0 else "disabled")
-        # self.next_button.config(state="normal" if self.current_page < self.total_pages - 1 else "disabled")
-
+        self.prev_button.config(state="normal" if self.current_page > 0 else "disabled")
+        self.next_button.config(state="normal" if self.current_page < self.total_pages - 1 else "disabled")
 
     def _refresh_view(self):
         self._setup_data()
@@ -170,7 +159,6 @@ class BowScreen(tk.Toplevel):
 
         # Actualizar etiqueta de página
         self._update_page_label()
-
 
     def _bind_events(self):
         def update_scrollbars(event=None):
