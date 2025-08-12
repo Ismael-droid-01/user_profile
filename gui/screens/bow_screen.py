@@ -3,11 +3,12 @@ from tkinter import ttk
 from functools import partial
 from gui.screens.labeler_screen import LabelerScreen
 
-class BowScreen(tk.Tk):
+class BowScreen(tk.Toplevel):
     _subwindow = None
 
-    def __init__(self, data_list):
-        super().__init__()
+    def __init__(self, data_list, parent=None):
+        super().__init__(parent)
+        self.parent = parent
         self.title("Bolsa de palabras")
         self.geometry("1200x600")
 
