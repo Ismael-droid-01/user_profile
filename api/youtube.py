@@ -12,8 +12,8 @@ load_dotenv()
 API_KEY = os.getenv("YOUTUBE_API_KEY")
 client = build('youtube', 'v3', developerKey=API_KEY)
 
-EN_DB_PATH = "data/en/youtube_comments.db"
-ES_DB_PATH = "data/es/youtube_comments.db"
+EN_DB_PATH = "data/en/raw/youtube_comments.db"
+ES_DB_PATH = "data/es/raw/youtube_comments.db"
 
 def get_channel_info(channel_id):
     try:

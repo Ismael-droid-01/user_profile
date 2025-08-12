@@ -15,8 +15,8 @@ client = praw.Reddit(
 
 client.read_only = True
 
-EN_DB_PATH = "data/en/reddit_posts.db"
-ES_DB_PATH = "data/es/reddit_posts.db"
+EN_DB_PATH = "data/en/raw/reddit_posts.db"
+ES_DB_PATH = "data/es/raw/reddit_posts.db"
 
 def get_posts(subreddit="offmychest", limit=100, language="en"):
     posts = []
