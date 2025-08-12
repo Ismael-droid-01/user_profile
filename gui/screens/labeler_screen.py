@@ -80,11 +80,31 @@ class LabelerScreen(tk.Toplevel):
         self.selectors_frame.pack(fill="x", padx=10, pady=(10, 20))
 
         tk.Label(self.selectors_frame, text="Selector personalidad:").grid(row=0, column=0, sticky="w", padx=(0,5))
-        self.combo_personality = ttk.Combobox(self.selectors_frame, values=["Formal", "Casual", "Amigable"], width=15)
+        self.combo_personality = ttk.Combobox(
+            self.selectors_frame, 
+            values=[
+                "Formal", "Casual", "Amigable", "Hostil", "Sarcástico", "Neutro",
+                "Emotivo", "Reservado", "Extrovertido", "Introvertido", "Optimista",
+                "Pesimista", "Autoritario", "Cooperativo", "Crítico", "Humilde", 
+                "Confianzudo", "Objetivo", "Subjetivo", "Irrónico"
+            ], 
+            width=15,
+            state="readonly"
+        )
         self.combo_personality.grid(row=0, column=1, sticky="w", padx=(0,15))
 
         tk.Label(self.selectors_frame, text="Selector profesional:").grid(row=0, column=2, sticky="w", padx=(0,5))
-        self.combo_professional = ttk.Combobox(self.selectors_frame, values=["Programador", "Diseñador", "Analista"], width=15)
+        self.combo_professional = ttk.Combobox(
+            self.selectors_frame, 
+            values=[
+                "Programador", "Diseñador", "Analista", "Estudiante", "Docente",
+                "Investigador", "Ingeniero", "Médico", "Abogado", "Emprendedor",
+                "Influencer", "Periodista", "Técnico", "Gamer", "Comunicador",
+                "Científico", "Artista", "Economista", "Psicólogo", "Administrador"
+            ], 
+            width=15,
+            state="readonly"
+        )
         self.combo_professional.grid(row=0, column=3, sticky="w")
 
         self.btn_save = tk.Button(
