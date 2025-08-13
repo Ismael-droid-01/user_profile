@@ -1,8 +1,6 @@
 from collections import Counter
 from datetime import datetime
 from utils.preprocessing import normalize_text, parse_and_tokenize
-import tkinter as tk
-from tkinter import ttk
 import api.reddit as reddit
 import api.youtube as youtube
 
