@@ -32,12 +32,6 @@ source venv/bin/activate
 ```bash
 pip install -r requirements.txt
 ```
-
-4. Descargar los modelos de lenguaje spaCy para español e inglés:
-```bash
-python3 -m spacy download es_core_news_sm
-python3 -m spacy download en_core_web_sm
-```
 ---
 ## Uso
 1. Asegúrate de tener el entorno virtual activado (source venv/bin/activate).
