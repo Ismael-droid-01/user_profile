@@ -25,7 +25,12 @@ cd user_profile
 2. Crear y activar un entorno virtual de Python para aislar las dependecias:
 ```bash
 python -m venv venv
+
+# Linux
 source venv/bin/activate
+
+# Windows
+.\venv\Scripts\activate.bat
 ``` 
 
 3. Instalar las librerías requeridas:
